@@ -1,16 +1,76 @@
+'use client'
+
 import Link from "next/link"
+import { signIn } from "next-auth/react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { routes } from "@/lib/constants"
+import { useToast } from "@/hooks/use-toast"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setIsLoading(true)
+
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+
+    try {
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.error) {
+        throw new Error(result.error)
+      }
+
+      const callbackUrl = searchParams.get('callbackUrl') || routes.dashboard
+      router.push(callbackUrl)
+      router.refresh()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Invalid credentials",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setIsLoading(true)
+    try {
+      await signIn('google', {
+        callbackUrl: searchParams.get('callbackUrl') || routes.dashboard,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign in with Google",
+        variant: "destructive",
+      })
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form onSubmit={onSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col gap-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
         <p className="text-sm text-muted-foreground">
@@ -22,6 +82,7 @@ export function LoginForm({
           <Label className="text-sm" htmlFor="email">Email</Label>
           <Input
             id="email"
+            name="email"
             type="email"
             placeholder="name@example.com"
             className="rounded-lg"
@@ -40,13 +101,14 @@ export function LoginForm({
           </div>
           <Input
             id="password"
+            name="password"
             type="password"
             className="rounded-lg"
             required
           />
         </div>
-        <Button className="rounded-lg" type="submit">
-          Sign in
+        <Button className="rounded-lg" type="submit" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign in"}
         </Button>
       </div>
       <div className="relative my-2 text-center">
@@ -59,7 +121,13 @@ export function LoginForm({
           </span>
         </div>
       </div>
-      <Button variant="outline" className="rounded-lg" type="button">
+      <Button
+        variant="outline"
+        className="rounded-lg"
+        type="button"
+        disabled={isLoading}
+        onClick={handleGoogleSignIn}
+      >
         <svg viewBox="0 0 24 24" className="mr-2 h-4 w-4">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

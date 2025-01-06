@@ -1,16 +1,68 @@
+'use client'
+
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { routes } from "@/lib/constants"
+import { useToast } from "@/hooks/use-toast"
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const router = useRouter()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
+
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setIsLoading(true)
+
+    const formData = new FormData(event.currentTarget)
+    const data = {
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+      firstName: formData.get('firstName') as string,
+      lastName: formData.get('lastName') as string,
+    }
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to register')
+      }
+
+      toast({
+        title: "Account created!",
+        description: "Please sign in with your new account.",
+      })
+
+      router.push(routes.home)
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Something went wrong",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form onSubmit={onSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col gap-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
         <p className="text-sm text-muted-foreground">
@@ -23,6 +75,7 @@ export function SignUpForm({
             <Label className="text-sm" htmlFor="firstName">First Name</Label>
             <Input
               id="firstName"
+              name="firstName"
               type="text"
               placeholder="John"
               className="rounded-lg"
@@ -33,6 +86,7 @@ export function SignUpForm({
             <Label className="text-sm" htmlFor="lastName">Last Name</Label>
             <Input
               id="lastName"
+              name="lastName"
               type="text"
               placeholder="Doe"
               className="rounded-lg"
@@ -44,6 +98,7 @@ export function SignUpForm({
           <Label className="text-sm" htmlFor="email">Email</Label>
           <Input
             id="email"
+            name="email"
             type="email"
             placeholder="john.doe@example.com"
             className="rounded-lg"
@@ -54,13 +109,14 @@ export function SignUpForm({
           <Label className="text-sm" htmlFor="password">Password</Label>
           <Input
             id="password"
+            name="password"
             type="password"
             className="rounded-lg"
             required
           />
         </div>
-        <Button className="rounded-lg" type="submit">
-          Sign Up
+        <Button className="rounded-lg" type="submit" disabled={isLoading}>
+          {isLoading ? "Creating account..." : "Sign Up"}
         </Button>
       </div>
       <div className="relative my-2 text-center">
