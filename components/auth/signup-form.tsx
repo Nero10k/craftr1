@@ -1,7 +1,8 @@
 'use client'
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -57,6 +58,22 @@ export function SignUpForm({
         variant: "destructive",
       })
     } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setIsLoading(true)
+    try {
+      await signIn('google', {
+        callbackUrl: routes.dashboard,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign up with Google",
+        variant: "destructive",
+      })
       setIsLoading(false)
     }
   }
@@ -129,7 +146,13 @@ export function SignUpForm({
           </span>
         </div>
       </div>
-      <Button variant="outline" className="rounded-lg" type="button">
+      <Button
+        variant="outline"
+        className="rounded-lg"
+        type="button"
+        disabled={isLoading}
+        onClick={handleGoogleSignIn}
+      >
         <svg viewBox="0 0 24 24" className="mr-2 h-4 w-4">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -148,7 +171,7 @@ export function SignUpForm({
             fill="#EA4335"
           />
         </svg>
-        Sign up with Google
+        {isLoading ? "Signing up..." : "Sign up with Google"}
       </Button>
       <div className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}

@@ -146,7 +146,7 @@ export function LoginForm({
             fill="#EA4335"
           />
         </svg>
-        Sign in with Google
+        {isLoading ? "Signing in..." : "Sign in with Google"}
       </Button>
       <div className="text-center text-sm text-muted-foreground">
         Don't have an account?{" "}
