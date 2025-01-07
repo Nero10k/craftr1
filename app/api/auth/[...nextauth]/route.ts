@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import { prisma } from "@/lib/db"
 import { UserRole } from "@prisma/client"
+import { handleUserRegistration } from "@/lib/telegram/telegram-events"
 
 export const authOptions: AuthOptions = {
   // @ts-expect-error - PrismaAdapter has incorrect types
@@ -14,6 +15,15 @@ export const authOptions: AuthOptions = {
   },
   pages: {
     signIn: "/login",
+  },
+  events: {
+    createUser: async (message) => {
+      // Handle new user registration
+      await handleUserRegistration({
+        email: message.user.email!,
+        name: message.user.name || undefined,
+      })
+    },
   },
   providers: [
     GoogleProvider({

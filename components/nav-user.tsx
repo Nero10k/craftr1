@@ -96,9 +96,11 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles className="mr-2" />
-                Upgrade to Pro
+              <DropdownMenuItem asChild>
+                <Link href="/billing">
+                  <Sparkles className="mr-2" />
+                  Upgrade to Pro
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
