@@ -8,8 +8,9 @@ export const siteConfig = {
 } as const
 
 export const routes = {
-  home: "/",
+  home: "/home",
   signup: "/signup",
   forgotPassword: "/forgot-password",
-  dashboard: "/dashboard"
+  dashboard: "/home",
+  login: "/login"
 } as const 

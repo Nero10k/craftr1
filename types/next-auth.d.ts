@@ -1,28 +1,48 @@
-import { DefaultSession } from "next-auth"
-import { Role } from "@/lib/auth/types"
+import { DefaultSession, DefaultUser } from 'next-auth'
+import { JWT, DefaultJWT } from 'next-auth/jwt'
+import { UserRole } from '@prisma/client'
 
-declare module "next-auth" {
-  interface Session {
-    user: {
-      id: string
-      firstName?: string | null
-      lastName?: string | null
-      role: Role
-    } & DefaultSession["user"]
+declare module 'next-auth' {
+  interface Profile {
+    picture?: string
+    email_verified?: boolean
+    email?: string
+    name?: string
   }
 
-  interface User {
+  interface Session extends DefaultSession {
+    user: {
+      id: string
+      role: UserRole
+      firstName?: string | null
+      lastName?: string | null
+      stripeCustomerId?: string | null
+      stripePriceId?: string | null
+      stripeSubscriptionStatus?: string | null
+      stripeCurrentPeriodEnd?: Date | null
+    } & DefaultSession['user']
+  }
+
+  interface User extends DefaultUser {
+    role: UserRole
     firstName?: string | null
     lastName?: string | null
-    role: Role
+    stripeCustomerId?: string | null
+    stripePriceId?: string | null
+    stripeSubscriptionStatus?: string | null
+    stripeCurrentPeriodEnd?: Date | null
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
+declare module 'next-auth/jwt' {
+  interface JWT extends DefaultJWT {
     id: string
+    role: UserRole
     firstName?: string | null
     lastName?: string | null
-    role: Role
+    stripeCustomerId?: string | null
+    stripePriceId?: string | null
+    stripeSubscriptionStatus?: string | null
+    stripeCurrentPeriodEnd?: Date | null
   }
 } 

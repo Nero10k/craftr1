@@ -1,38 +1,10 @@
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { compare } from "bcryptjs"
-import NextAuth, { AuthOptions, Session, User } from "next-auth"
+import NextAuth, { AuthOptions, Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import { JWT } from "next-auth/jwt"
 import { prisma } from "@/lib/db"
-import { Role } from "@/lib/auth/types"
-
-type UserWithRole = {
-  id: string
-  email: string
-  name: string | null
-  firstName: string | null
-  lastName: string | null
-  password: string | null
-  role: Role
-  image: string | null
-}
-
-interface ExtendedUser extends Omit<User, 'role'> {
-  firstName?: string | null
-  lastName?: string | null
-  role?: Role
-  image?: string | null
-}
-
-interface ExtendedJWT extends Omit<JWT, 'id'> {
-  id: string
-  firstName?: string | null
-  lastName?: string | null
-  role?: Role
-  image?: string | null
-  picture?: string | null
-}
+import { UserRole } from "@prisma/client"
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -70,8 +42,12 @@ export const authOptions: AuthOptions = {
             lastName: true,
             role: true,
             image: true,
+            stripeCustomerId: true,
+            stripePriceId: true,
+            stripeSubscriptionStatus: true,
+            stripeCurrentPeriodEnd: true,
           }
-        }) as UserWithRole | null
+        })
 
         if (!user || !user.password) {
           throw new Error("Invalid credentials")
@@ -86,68 +62,68 @@ export const authOptions: AuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
           image: user.image,
+          stripeCustomerId: user.stripeCustomerId,
+          stripePriceId: user.stripePriceId,
+          stripeSubscriptionStatus: user.stripeSubscriptionStatus,
+          stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd,
         }
       },
     }),
   ],
   callbacks: {
-    async session({ token, session }: { token: ExtendedJWT; session: Session }) {
+    async session({ session, token }) {
       if (token) {
         session.user.id = token.id
-        session.user.name = token.name as string | null
         session.user.email = token.email as string
-        session.user.firstName = token.firstName
-        session.user.lastName = token.lastName
-        session.user.role = token.role as Role
-        session.user.image = (token.image || token.picture || null) as string | null
+        session.user.firstName = token.firstName as string | null
+        session.user.lastName = token.lastName as string | null
+        session.user.role = token.role as UserRole
+        session.user.image = token.picture as string | null
+        session.user.stripeCustomerId = token.stripeCustomerId as string | null
+        session.user.stripePriceId = token.stripePriceId as string | null
+        session.user.stripeSubscriptionStatus = token.stripeSubscriptionStatus as string | null
+        session.user.stripeCurrentPeriodEnd = token.stripeCurrentPeriodEnd as Date | null
       }
-
       return session
     },
-    async jwt({ token, user, account, profile, trigger, session }: { token: ExtendedJWT; user: ExtendedUser | null; account: any; profile?: any; trigger?: string; session?: any }) {
-      if (trigger === 'update' && session?.user) {
-        return {
-          ...token,
-          ...session.user,
-          image: session.user.image as string | null,
-        }
-      }
-
+    async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id
+        token.role = user.role as UserRole
         token.firstName = user.firstName
         token.lastName = user.lastName
-        token.role = (user.role || 'USER') as Role
-        token.image = user.image || null
+        token.stripeCustomerId = user.stripeCustomerId
+        token.stripePriceId = user.stripePriceId
+        token.stripeSubscriptionStatus = user.stripeSubscriptionStatus
+        token.stripeCurrentPeriodEnd = user.stripeCurrentPeriodEnd
       }
-      
+
       if (account?.provider === 'google' && profile) {
         const nameParts = profile.name?.split(' ') || []
         token.firstName = nameParts[0] || ''
         token.lastName = nameParts.slice(1).join(' ') || ''
-        token.image = (profile.picture as string) || token.image || null
-        
+        token.picture = profile.picture as string || token.picture || null
+
         try {
           const updatedUser = await prisma.user.update({
             where: { email: profile.email },
             data: {
               firstName: token.firstName,
               lastName: token.lastName,
-              name: profile.name,
-              image: token.image as string | null,
+              image: token.picture as string | null,
               emailVerified: new Date(),
             },
           })
-          token.image = updatedUser.image
+          token.picture = updatedUser.image
         } catch (error) {
           console.error('Error updating user profile:', error)
         }
       }
+
       return token
     },
   },

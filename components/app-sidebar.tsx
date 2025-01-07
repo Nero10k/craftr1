@@ -18,13 +18,16 @@ import { useSession } from "next-auth/react"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { siteConfig } from "@/lib/constants"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar"
 
 // This is sample data.
@@ -47,6 +50,12 @@ const data = {
     },
   ],
   navMain: [
+    {
+      title: "Dashboard",
+      url: "/home",
+      icon: PieChart,
+      isActive: true,
+    },
     {
       title: "Playground",
       url: "#",
@@ -124,7 +133,7 @@ const data = {
         },
         {
           title: "Billing",
-          url: "#",
+          url: "/billing",
         },
         {
           title: "Limits",
@@ -164,7 +173,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                C
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="font-semibold">{siteConfig.name}</span>
+                <span className="text-xs text-muted-foreground">v1.0.1 beta</span>
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

@@ -33,6 +33,11 @@ model User {
   updatedAt          DateTime  @updatedAt
   accounts           Account[]
   sessions           Session[]
+  stripeCustomerId   String?   @unique
+  stripePriceId      String?
+  stripeSubscriptionStatus String?
+  stripeCurrentPeriodEnd DateTime?
+  verificationTokens VerificationToken[]
 }
 
 model Account {
@@ -66,6 +71,8 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
 
   @@unique([identifier, token])
 } 

@@ -1,0 +1,91 @@
+import { AppSidebar } from "@/components/app-sidebar"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+
+export default function HomePage() {
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-6">
+          <SidebarTrigger className="-ml-2" />
+          <Separator orientation="vertical" className="h-6" />
+          <div className="flex items-center gap-2">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Dashboard</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <main className="flex-1 space-y-4 p-8 pt-6">
+          <div className="flex items-center justify-between space-y-2">
+            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-xl border bg-card p-6">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                <p className="text-2xl font-bold">+573</p>
+              </div>
+            </div>
+            <div className="rounded-xl border bg-card p-6">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Active Projects</p>
+                <p className="text-2xl font-bold">+12</p>
+              </div>
+            </div>
+            <div className="rounded-xl border bg-card p-6">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
+                <p className="text-2xl font-bold">$15,231.89</p>
+              </div>
+            </div>
+            <div className="rounded-xl border bg-card p-6">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Active Users</p>
+                <p className="text-2xl font-bold">+573</p>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <div className="col-span-4 rounded-xl border bg-card">
+              <div className="h-[450px] p-6">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">Overview</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Monthly revenue and user growth
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-span-3 rounded-xl border bg-card">
+              <div className="h-[450px] p-6">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">Recent Activity</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your most recent actions and updates
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
+  )
+} 

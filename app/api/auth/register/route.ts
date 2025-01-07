@@ -8,34 +8,33 @@ export async function POST(req: Request) {
   try {
     const { email, password, firstName, lastName } = await req.json()
 
-    const existingUser = await prisma.user.findUnique({
+    if (!email || !password) {
+      return new NextResponse("Missing email or password", { status: 400 })
+    }
+
+    const exists = await prisma.user.findUnique({
       where: {
         email,
       },
     })
 
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "User with this email already exists" },
-        { status: 400 }
-      )
+    if (exists) {
+      return new NextResponse("User already exists", { status: 400 })
     }
 
-    const hashedPassword = await hash(password, 10)
+    const hashedPassword = await hash(password, 12)
 
-    // Create the user
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         firstName,
         lastName,
-        name: `${firstName} ${lastName}`.trim(),
       },
     })
 
     // Create verification token
-    const token = crypto.randomBytes(32).toString('hex')
+    const token = crypto.randomUUID()
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
 
     await prisma.verificationToken.create({
@@ -43,20 +42,17 @@ export async function POST(req: Request) {
         identifier: email,
         token,
         expires,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
       },
     })
 
-    // Send verification email
-    await sendVerificationEmail(email, token)
-
-    return NextResponse.json({
-      message: "User created successfully. Please check your email to verify your account.",
-    })
+    return new NextResponse("User created successfully", { status: 201 })
   } catch (error) {
-    console.error("Error creating user:", error)
-    return NextResponse.json(
-      { error: "Failed to create user" },
-      { status: 500 }
-    )
+    console.error("Error in register:", error)
+    return new NextResponse("Internal error", { status: 500 })
   }
 } 
