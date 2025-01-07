@@ -116,7 +116,7 @@ export function NavUser({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/account?tab=notifications">
+                <Link href="/notifications">
                   <Bell className="mr-2" />
                   Notifications
                 </Link>
