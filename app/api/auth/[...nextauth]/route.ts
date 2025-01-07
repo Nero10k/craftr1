@@ -7,7 +7,8 @@ import { prisma } from "@/lib/db"
 import { UserRole } from "@prisma/client"
 
 export const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
+  // @ts-expect-error - PrismaAdapter has incorrect types
+  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt" as const,
   },
