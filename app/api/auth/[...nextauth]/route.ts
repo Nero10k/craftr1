@@ -106,19 +106,27 @@ export const authOptions: AuthOptions = {
         const nameParts = profile.name?.split(' ') || []
         token.firstName = nameParts[0] || ''
         token.lastName = nameParts.slice(1).join(' ') || ''
-        token.picture = profile.picture as string || token.picture || null
 
         try {
-          const updatedUser = await prisma.user.update({
+          // Check if this is a new user
+          const existingUser = await prisma.user.findUnique({
             where: { email: profile.email },
-            data: {
-              firstName: token.firstName,
-              lastName: token.lastName,
-              image: token.picture as string | null,
-              emailVerified: new Date(),
-            },
-          })
-          token.picture = updatedUser.image
+          });
+
+          // Only update the profile picture if this is a new user (first registration)
+          if (!existingUser) {
+            token.picture = profile.picture as string || token.picture || null;
+            const updatedUser = await prisma.user.update({
+              where: { email: profile.email },
+              data: {
+                firstName: token.firstName,
+                lastName: token.lastName,
+                image: token.picture as string | null,
+                emailVerified: new Date(),
+              },
+            })
+            token.picture = updatedUser.image
+          }
         } catch (error) {
           console.error('Error updating user profile:', error)
         }
