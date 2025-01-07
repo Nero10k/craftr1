@@ -7,8 +7,11 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  User as UserIcon,
 } from "lucide-react"
 import { signOut } from "next-auth/react"
+import Link from "next/link"
+import Image from "next/image"
 
 import {
   Avatar,
@@ -37,10 +40,27 @@ export function NavUser({
   user: {
     name: string
     email: string
-    avatar: string
+    image: string | null
   }
 }) {
   const { isMobile } = useSidebar()
+  const initials = user.name?.split(' ').map(n => n[0]).join('') || '?'
+
+  const UserAvatar = () => (
+    <Avatar className="h-8 w-8 rounded-lg">
+      {user.image ? (
+        <AvatarImage 
+          src={user.image} 
+          alt={user.name} 
+          className="object-cover"
+        />
+      ) : (
+        <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
+          {initials}
+        </AvatarFallback>
+      )}
+    </Avatar>
+  )
 
   return (
     <SidebarMenu>
@@ -51,10 +71,7 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
+              <UserAvatar />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
@@ -70,10 +87,7 @@ export function NavUser({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
+                <UserAvatar />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user.name}</span>
                   <span className="truncate text-xs">{user.email}</span>
@@ -83,28 +97,32 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
+                <Sparkles className="mr-2" />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem asChild>
+                <Link href="/account">
+                  <BadgeCheck className="mr-2" />
+                  Account
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard />
+                <CreditCard className="mr-2" />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+              <DropdownMenuItem asChild>
+                <Link href="/account?tab=notifications">
+                  <Bell className="mr-2" />
+                  Notifications
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
-              <LogOut />
+              <LogOut className="mr-2" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -5,51 +5,48 @@ export async function POST(req: Request) {
   try {
     const { token } = await req.json()
 
-    const verificationToken = await prisma.verificationToken.findUnique({
-      where: {
-        token,
-      },
-    })
-
-    if (!verificationToken) {
-      return NextResponse.json(
-        { error: "Invalid verification token" },
-        { status: 400 }
-      )
-    }
-
-    // Check if token is expired
-    if (new Date() > verificationToken.expires) {
-      await prisma.verificationToken.delete({
+    // Use a transaction to ensure atomic operations
+    const result = await prisma.$transaction(async (tx) => {
+      const verificationToken = await tx.verificationToken.findUnique({
         where: { token },
+        select: {
+          identifier: true,
+          expires: true,
+        }
       })
-      return NextResponse.json(
-        { error: "Verification token has expired" },
-        { status: 400 }
-      )
-    }
 
-    // Update user's email verification status
-    await prisma.user.update({
-      where: {
-        email: verificationToken.identifier,
-      },
-      data: {
-        emailVerified: new Date(),
-      },
-    })
+      if (!verificationToken) {
+        throw new Error("Invalid verification token")
+      }
 
-    // Delete the used token
-    await prisma.verificationToken.delete({
-      where: { token },
+      if (new Date() > verificationToken.expires) {
+        // Delete expired token
+        await tx.verificationToken.delete({
+          where: { token }
+        })
+        throw new Error("Verification token has expired")
+      }
+
+      // Update user and delete token atomically
+      await tx.user.update({
+        where: { email: verificationToken.identifier },
+        data: { emailVerified: new Date() }
+      })
+
+      await tx.verificationToken.delete({
+        where: { token }
+      })
+
+      return { success: true }
     })
 
     return NextResponse.json({ message: "Email verified successfully" })
   } catch (error) {
     console.error("Error verifying email:", error)
+    const message = error instanceof Error ? error.message : "Failed to verify email"
     return NextResponse.json(
-      { error: "Failed to verify email" },
-      { status: 500 }
+      { error: message },
+      { status: error instanceof Error && error.message.includes("token") ? 400 : 500 }
     )
   }
 } 

@@ -15,6 +15,23 @@ type UserWithRole = {
   lastName: string | null
   password: string | null
   role: Role
+  image: string | null
+}
+
+interface ExtendedUser extends Omit<User, 'role'> {
+  firstName?: string | null
+  lastName?: string | null
+  role?: Role
+  image?: string | null
+}
+
+interface ExtendedJWT extends Omit<JWT, 'id'> {
+  id: string
+  firstName?: string | null
+  lastName?: string | null
+  role?: Role
+  image?: string | null
+  picture?: string | null
 }
 
 export const authOptions: AuthOptions = {
@@ -45,6 +62,15 @@ export const authOptions: AuthOptions = {
           where: {
             email: credentials.email,
           },
+          select: {
+            id: true,
+            email: true,
+            password: true,
+            firstName: true,
+            lastName: true,
+            role: true,
+            image: true,
+          }
         }) as UserWithRole | null
 
         if (!user || !user.password) {
@@ -64,47 +90,60 @@ export const authOptions: AuthOptions = {
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
+          image: user.image,
         }
       },
     }),
   ],
   callbacks: {
-    async session({ token, session }: { token: JWT; session: Session }) {
+    async session({ token, session }: { token: ExtendedJWT; session: Session }) {
       if (token) {
         session.user.id = token.id
-        session.user.name = token.name
-        session.user.email = token.email
+        session.user.name = token.name as string | null
+        session.user.email = token.email as string
         session.user.firstName = token.firstName
         session.user.lastName = token.lastName
         session.user.role = token.role as Role
-        session.user.image = token.picture
+        session.user.image = (token.image || token.picture || null) as string | null
       }
 
       return session
     },
-    async jwt({ token, user, account, profile }: { token: JWT; user: User | null; account: any; profile?: any }) {
+    async jwt({ token, user, account, profile, trigger, session }: { token: ExtendedJWT; user: ExtendedUser | null; account: any; profile?: any; trigger?: string; session?: any }) {
+      if (trigger === 'update' && session?.user) {
+        return {
+          ...token,
+          ...session.user,
+          image: session.user.image as string | null,
+        }
+      }
+
       if (user) {
         token.id = user.id
         token.firstName = user.firstName
         token.lastName = user.lastName
-        token.role = (user as UserWithRole).role
+        token.role = (user.role || 'USER') as Role
+        token.image = user.image || null
       }
+      
       if (account?.provider === 'google' && profile) {
         const nameParts = profile.name?.split(' ') || []
         token.firstName = nameParts[0] || ''
         token.lastName = nameParts.slice(1).join(' ') || ''
-        token.picture = profile.picture
+        token.image = (profile.picture as string) || token.image || null
         
         try {
-          await prisma.user.update({
+          const updatedUser = await prisma.user.update({
             where: { email: profile.email },
             data: {
               firstName: token.firstName,
               lastName: token.lastName,
               name: profile.name,
+              image: token.image as string | null,
               emailVerified: new Date(),
             },
           })
+          token.image = updatedUser.image
         } catch (error) {
           console.error('Error updating user profile:', error)
         }
