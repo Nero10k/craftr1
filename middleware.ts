@@ -28,9 +28,17 @@ const authRoutes = [
 ]
 
 export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname
+  const isDevelopment = process.env.NODE_ENV === "development"
+
+  // Allow unrestricted access to /admin and /admin/integrations in development
+  if (isDevelopment && (path === "/admin" || path === "/admin/integrations")) {
+    return NextResponse.next()
+  }
+
+  // For all other routes, proceed with normal auth checks
   const token = await getToken({ req: request })
   const isAuthenticated = !!token
-  const path = request.nextUrl.pathname
 
   // Check if the path is protected
   const isProtectedPath = protectedPaths.some(prefix => 
@@ -46,7 +54,7 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   if (isAuthenticated && isAuthPath) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    return NextResponse.redirect(new URL("/home", request.url))
   }
 
   // Redirect unauthenticated users to login
@@ -56,10 +64,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // Check role-based access
+  // Check role-based access (skip in development for admin routes)
   if (requiredRoles && (!token?.role || !requiredRoles.includes(token.role))) {
-    // If user doesn't have the required role, redirect to dashboard
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    // If in development and it's an admin route, allow access
+    if (isDevelopment && path.startsWith("/admin")) {
+      return NextResponse.next()
+    }
+    // Otherwise redirect to home
+    return NextResponse.redirect(new URL("/home", request.url))
+  }
+
+  // Block access to /admin/integrations in production
+  if (process.env.NODE_ENV === "production" && request.nextUrl.pathname === "/admin/integrations") {
+    return NextResponse.redirect(new URL("/admin", request.url))
   }
 
   return NextResponse.next()

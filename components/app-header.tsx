@@ -5,9 +5,10 @@ import { SidebarTrigger } from "@/components/ui/sidebar"
 
 interface AppHeaderProps {
   children?: React.ReactNode
+  hideNotifications?: boolean
 }
 
-export function AppHeader({ children }: AppHeaderProps) {
+export function AppHeader({ children, hideNotifications }: AppHeaderProps) {
   return (
     <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-background px-6 dark:bg-background">
       <SidebarTrigger />
@@ -15,7 +16,7 @@ export function AppHeader({ children }: AppHeaderProps) {
         {children}
       </div>
       <div className="flex items-center gap-4">
-        <NotificationsDropdown />
+        {!hideNotifications && <NotificationsDropdown />}
       </div>
     </header>
   )
