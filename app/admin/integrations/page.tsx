@@ -426,6 +426,26 @@ export default function IntegrationsPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>LinkedIn Insight Tag</CardTitle>
+                  <CardDescription>
+                    Configure LinkedIn Insight Tag tracking settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="NEXT_PUBLIC_LINKEDIN_TAG_ID">Partner ID</Label>
+                    <Input
+                      id="NEXT_PUBLIC_LINKEDIN_TAG_ID"
+                      name="NEXT_PUBLIC_LINKEDIN_TAG_ID"
+                      placeholder="LinkedIn Partner ID"
+                      defaultValue={getInputValue("NEXT_PUBLIC_LINKEDIN_TAG_ID")}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="realtime" className="space-y-4">

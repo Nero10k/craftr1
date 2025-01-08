@@ -5,6 +5,7 @@ import { trackSignUp as trackGASignUp, trackBeginCheckout as trackGACheckout, tr
 import { trackCompleteRegistration as trackTikTokRegistration, trackInitiateCheckout as trackTikTokCheckout, trackSubscribe as trackTikTokSubscribe } from './tiktok-pixel'
 import { trackCompleteRegistration as trackPinterestRegistration, trackInitiateCheckout as trackPinterestCheckout, trackSubscribe as trackPinterestSubscribe } from './pinterest-tag'
 import { trackCompleteRegistration as trackTwitterRegistration, trackInitiateCheckout as trackTwitterCheckout, trackSubscribe as trackTwitterSubscribe } from './twitter-pixel'
+import { trackCompleteRegistration as trackLinkedInRegistration, trackInitiateCheckout as trackLinkedInCheckout, trackSubscribe as trackLinkedInSubscribe } from './linkedin-tag'
 
 export function trackSignUp() {
   trackMetaRegistration()
@@ -12,6 +13,7 @@ export function trackSignUp() {
   trackTikTokRegistration()
   trackPinterestRegistration()
   trackTwitterRegistration()
+  trackLinkedInRegistration()
 }
 
 export function trackCheckoutStart(value?: number, currency: string = 'EUR') {
@@ -20,6 +22,7 @@ export function trackCheckoutStart(value?: number, currency: string = 'EUR') {
   trackTikTokCheckout(value, currency)
   trackPinterestCheckout(value, currency)
   trackTwitterCheckout(value, currency)
+  trackLinkedInCheckout(value, currency)
 }
 
 export function trackSubscriptionComplete(value?: number, currency: string = 'EUR', predicted_ltv?: number) {
@@ -28,4 +31,5 @@ export function trackSubscriptionComplete(value?: number, currency: string = 'EU
   trackTikTokSubscribe(value, currency)
   trackPinterestSubscribe(value, currency)
   trackTwitterSubscribe(value, currency)
+  trackLinkedInSubscribe(value, currency)
 } 
