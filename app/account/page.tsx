@@ -1,3 +1,6 @@
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
+import { authOptions } from "@/lib/auth"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { AccountForm } from "@/components/account/account-form"
@@ -19,7 +22,13 @@ import {
 } from "@/components/ui/sidebar"
 import { AppHeader } from "@/components/app-header"
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user) {
+    redirect('/')
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />

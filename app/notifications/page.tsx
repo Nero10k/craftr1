@@ -1,3 +1,6 @@
+import { getServerSession } from "next-auth"
+import { redirect } from "next/navigation"
+import { authOptions } from "@/lib/auth"
 import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeader } from "@/components/app-header"
 import {
@@ -21,7 +24,13 @@ import {
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 
-export default function NotificationsPage() {
+export default async function NotificationsPage() {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user) {
+    redirect('/')
+  }
+
   // This would come from your notifications state/context
   const notifications = [
     {
