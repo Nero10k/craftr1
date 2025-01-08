@@ -1,8 +1,8 @@
 import { AppSidebar } from "@/components/app-sidebar"
-import { AppHeaderSkeleton, CardSkeleton, StatsSkeleton } from "@/components/skeletons"
+import { AppHeaderSkeleton, TableRowSkeleton } from "@/components/skeletons"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
-export default function BillingLoading() {
+export default function NotificationsLoading() {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -10,11 +10,10 @@ export default function BillingLoading() {
         <AppHeaderSkeleton />
         <main className="flex-1 p-6">
           <div className="mx-auto max-w-5xl space-y-8">
-            <StatsSkeleton />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <CardSkeleton />
-              <CardSkeleton />
-              <CardSkeleton />
+            <div className="space-y-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <TableRowSkeleton key={i} />
+              ))}
             </div>
           </div>
         </main>

@@ -62,4 +62,32 @@ export function SearchBarSkeleton() {
       <Skeleton className="h-10 w-[100px]" />
     </div>
   )
+}
+
+export function NavSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <Skeleton className="h-4 w-4" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function AppHeaderSkeleton() {
+  return (
+    <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-background px-6 dark:bg-background">
+      <Skeleton className="h-6 w-6" />
+      <div className="flex flex-1 items-center gap-4">
+        <Skeleton className="h-8 w-8 rounded-full" />
+        <Skeleton className="h-4 w-32" />
+      </div>
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-8 w-8" />
+      </div>
+    </header>
+  )
 } 

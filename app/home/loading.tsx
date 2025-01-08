@@ -2,7 +2,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { AppHeaderSkeleton, CardSkeleton, StatsSkeleton } from "@/components/skeletons"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
-export default function BillingLoading() {
+export default function HomeLoading() {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -11,10 +11,13 @@ export default function BillingLoading() {
         <main className="flex-1 p-6">
           <div className="mx-auto max-w-5xl space-y-8">
             <StatsSkeleton />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <CardSkeleton />
-              <CardSkeleton />
-              <CardSkeleton />
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+              <div className="col-span-4">
+                <CardSkeleton />
+              </div>
+              <div className="col-span-3">
+                <CardSkeleton />
+              </div>
             </div>
           </div>
         </main>

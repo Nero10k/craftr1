@@ -1,7 +1,7 @@
+import { UserRole } from "@prisma/client"
 import { getToken } from "next-auth/jwt"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { Role } from "@/lib/auth/types"
 
 // Configure which routes should be protected
 const protectedPaths = [
@@ -11,13 +11,13 @@ const protectedPaths = [
 ]
 
 // Configure routes that require specific roles
-const roleBasedPaths: Record<string, Role[]> = {
-  "/admin": [Role.ADMIN],
-  "/admin/users": [Role.ADMIN],
-  "/admin/settings": [Role.ADMIN],
-  "/support": [Role.SUPPORT, Role.ADMIN],
-  "/support/tickets": [Role.SUPPORT, Role.ADMIN],
-  "/dashboard/analytics": [Role.SUPPORT, Role.ADMIN],
+const roleBasedPaths: Record<string, UserRole[]> = {
+  "/admin": [UserRole.ADMIN],
+  "/admin/users": [UserRole.ADMIN],
+  "/admin/settings": [UserRole.ADMIN],
+  "/support": [UserRole.SUPPORT, UserRole.ADMIN],
+  "/support/tickets": [UserRole.SUPPORT, UserRole.ADMIN],
+  "/dashboard/analytics": [UserRole.SUPPORT, UserRole.ADMIN],
 }
 
 // Configure which routes should be accessible only to non-authenticated users
