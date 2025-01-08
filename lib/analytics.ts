@@ -4,12 +4,14 @@ import { trackCompleteRegistration as trackMetaRegistration, trackInitiateChecko
 import { trackSignUp as trackGASignUp, trackBeginCheckout as trackGACheckout, trackSubscription as trackGASubscription } from './google-analytics'
 import { trackCompleteRegistration as trackTikTokRegistration, trackInitiateCheckout as trackTikTokCheckout, trackSubscribe as trackTikTokSubscribe } from './tiktok-pixel'
 import { trackCompleteRegistration as trackPinterestRegistration, trackInitiateCheckout as trackPinterestCheckout, trackSubscribe as trackPinterestSubscribe } from './pinterest-tag'
+import { trackCompleteRegistration as trackTwitterRegistration, trackInitiateCheckout as trackTwitterCheckout, trackSubscribe as trackTwitterSubscribe } from './twitter-pixel'
 
 export function trackSignUp() {
   trackMetaRegistration()
   trackGASignUp()
   trackTikTokRegistration()
   trackPinterestRegistration()
+  trackTwitterRegistration()
 }
 
 export function trackCheckoutStart(value?: number, currency: string = 'EUR') {
@@ -17,6 +19,7 @@ export function trackCheckoutStart(value?: number, currency: string = 'EUR') {
   trackGACheckout(value, currency)
   trackTikTokCheckout(value, currency)
   trackPinterestCheckout(value, currency)
+  trackTwitterCheckout(value, currency)
 }
 
 export function trackSubscriptionComplete(value?: number, currency: string = 'EUR', predicted_ltv?: number) {
@@ -24,4 +27,5 @@ export function trackSubscriptionComplete(value?: number, currency: string = 'EU
   trackGASubscription(value, currency)
   trackTikTokSubscribe(value, currency)
   trackPinterestSubscribe(value, currency)
+  trackTwitterSubscribe(value, currency)
 } 
