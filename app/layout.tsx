@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider } from "@/components/providers/auth-provider"
 import { Toaster } from "@/components/toaster"
 import { IntercomProvider } from '@/components/intercom-provider'
+import { MetaPixelProvider } from '@/components/meta-pixel-provider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -83,9 +84,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
+            <IntercomProvider />
+            <MetaPixelProvider />
             {children}
             <Toaster />
-            <IntercomProvider />
           </AuthProvider>
         </ThemeProvider>
       </body>

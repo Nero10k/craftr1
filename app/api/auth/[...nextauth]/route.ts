@@ -23,6 +23,9 @@ export const authOptions: AuthOptions = {
         email: message.user.email!,
         name: message.user.name || undefined,
       })
+
+      // Note: We can't track Meta Pixel events here because this runs on the server
+      // The Meta Pixel tracking will be handled on the client side
     },
   },
   providers: [

@@ -7,6 +7,7 @@ import { PLANS } from '@/lib/stripe/config'
 import { Icons } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { trackInitiateCheckout } from '@/lib/meta-pixel'
 
 interface BillingFormProps {
   subscriptionPlan: string
@@ -40,6 +41,10 @@ export function BillingForm({
       const data = await response.json()
 
       if (data.url) {
+        const plan = Object.values(PLANS).find(p => p.priceId === priceId)
+        if (plan) {
+          trackInitiateCheckout(plan.price, 'USD')
+        }
         window.location.href = data.url
       }
     } catch (error) {

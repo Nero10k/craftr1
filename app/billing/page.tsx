@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { PLANS } from '@/lib/stripe/config'
 import { BillingForm } from '@/components/billing/billing-form'
+import { SubscriptionSuccess } from '@/components/billing/subscription-success'
 import { redirect } from 'next/navigation'
 import { AppSidebar } from "@/components/app-sidebar"
 import {
@@ -75,6 +76,7 @@ export default async function BillingPage() {
               </div>
             </div>
             <Separator className="my-6" />
+            <SubscriptionSuccess />
             <BillingForm
               subscriptionPlan={subscriptionPlan?.name ?? 'Free'}
               stripeCustomerId={user.stripeCustomerId}
@@ -86,32 +88,7 @@ export default async function BillingPage() {
       </SidebarProvider>
     )
   } catch (error) {
-    console.error('Error loading billing page:', error)
-    return (
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <AppHeader>
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Billing</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </AppHeader>
-          <main className="container max-w-[1000px] p-8">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">Billing</h2>
-                <p className="text-red-500">
-                  There was an error loading your billing information. Please try again later.
-                </p>
-              </div>
-            </div>
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
-    )
+    console.error('Error:', error)
+    throw error
   }
 } 

@@ -9,6 +9,10 @@ const billingUrl = absoluteUrl('/billing')
 
 export async function POST(req: Request) {
   try {
+    if (!stripe) {
+      throw new Error('Stripe is not properly configured')
+    }
+
     const session = await getServerSession(authOptions)
 
     if (!session?.user) {
@@ -58,7 +62,7 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'subscription',
-      success_url: `${billingUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${billingUrl}?success=true&session_id={CHECKOUT_SESSION_ID}&price_id=${priceId}`,
       cancel_url: `${billingUrl}?canceled=true`,
       subscription_data: {
         metadata: {

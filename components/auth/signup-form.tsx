@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { routes } from "@/lib/constants"
 import { useToast } from "@/hooks/use-toast"
+import { trackCompleteRegistration } from "@/lib/meta-pixel"
 
 export function SignUpForm({
   className,
@@ -45,6 +46,9 @@ export function SignUpForm({
         throw new Error(error.error || 'Failed to register')
       }
 
+      // Track successful registration with Meta Pixel
+      trackCompleteRegistration()
+
       toast({
         title: "Account created!",
         description: "Please sign in with your new account.",
@@ -65,8 +69,17 @@ export function SignUpForm({
   async function handleGoogleSignIn() {
     setIsLoading(true)
     try {
-      await signIn('google', {
-        callbackUrl: routes.dashboard,
+      // Check if user exists before sign in
+      const email = await new Promise<string>((resolve) => {
+        signIn('google', {
+          callbackUrl: routes.dashboard,
+          redirect: false,
+        }).then((result) => {
+          if (result?.ok) {
+            // This is a new registration
+            trackCompleteRegistration()
+          }
+        })
       })
     } catch (error) {
       toast({

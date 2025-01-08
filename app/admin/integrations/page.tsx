@@ -133,6 +133,7 @@ export default function IntegrationsPage() {
               <TabsTrigger value="auth">Authentication</TabsTrigger>
               <TabsTrigger value="billing">Stripe</TabsTrigger>
               <TabsTrigger value="notifications">Chats & Notifications</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="realtime">Real-time</TabsTrigger>
             </TabsList>
 
@@ -319,6 +320,28 @@ export default function IntegrationsPage() {
                       name="NEXT_PUBLIC_INTERCOM_APP_ID"
                       placeholder="Intercom App ID"
                       defaultValue={getInputValue("NEXT_PUBLIC_INTERCOM_APP_ID")}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Meta Pixel</CardTitle>
+                  <CardDescription>
+                    Configure Meta (Facebook) Pixel for conversion tracking
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <Label htmlFor="NEXT_PUBLIC_META_PIXEL_ID">Pixel ID</Label>
+                    <Input
+                      id="NEXT_PUBLIC_META_PIXEL_ID"
+                      name="NEXT_PUBLIC_META_PIXEL_ID"
+                      placeholder="Meta Pixel ID"
+                      defaultValue={getInputValue("NEXT_PUBLIC_META_PIXEL_ID")}
                     />
                   </div>
                 </CardContent>
