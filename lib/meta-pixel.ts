@@ -19,14 +19,14 @@ export function trackCompleteRegistration() {
   })
 }
 
-export function trackInitiateCheckout(value?: number, currency: string = 'USD') {
+export function trackInitiateCheckout(value?: number, currency: string = 'EUR') {
   trackPixelEvent('InitiateCheckout', {
     currency,
     value,
   })
 }
 
-export function trackSubscribe(value?: number, currency: string = 'USD', predicted_ltv?: number) {
+export function trackSubscribe(value?: number, currency: string = 'EUR', predicted_ltv?: number) {
   trackPixelEvent('Subscribe', {
     currency,
     value,

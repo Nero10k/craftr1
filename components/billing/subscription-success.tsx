@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { trackSubscribe } from '@/lib/meta-pixel'
+import { trackSubscriptionComplete } from '@/lib/analytics'
 import { PLANS } from '@/lib/stripe/config'
 
 export function SubscriptionSuccess() {
@@ -17,7 +17,7 @@ export function SubscriptionSuccess() {
       if (plan) {
         // For subscription, we can set predicted_ltv as annual value
         const annualValue = plan.price * 12
-        trackSubscribe(plan.price, 'USD', annualValue)
+        trackSubscriptionComplete(plan.price, 'USD', annualValue)
       }
     }
   }, [success, priceId])

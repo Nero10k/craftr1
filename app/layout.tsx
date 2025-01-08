@@ -7,6 +7,7 @@ import { AuthProvider } from "@/components/providers/auth-provider"
 import { Toaster } from "@/components/toaster"
 import { IntercomProvider } from '@/components/intercom-provider'
 import { MetaPixelProvider } from '@/components/meta-pixel-provider'
+import { GoogleAnalyticsProvider } from '@/components/google-analytics-provider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -86,6 +87,7 @@ export default function RootLayout({
           <AuthProvider>
             <IntercomProvider />
             <MetaPixelProvider />
+            <GoogleAnalyticsProvider />
             {children}
             <Toaster />
           </AuthProvider>

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { routes } from "@/lib/constants"
 import { useToast } from "@/hooks/use-toast"
-import { trackCompleteRegistration } from "@/lib/meta-pixel"
+import { trackSignUp } from '@/lib/analytics'
 
 export function SignUpForm({
   className,
@@ -46,8 +46,8 @@ export function SignUpForm({
         throw new Error(error.error || 'Failed to register')
       }
 
-      // Track successful registration with Meta Pixel
-      trackCompleteRegistration()
+      // Track successful registration
+      trackSignUp()
 
       toast({
         title: "Account created!",
@@ -77,7 +77,7 @@ export function SignUpForm({
         }).then((result) => {
           if (result?.ok) {
             // This is a new registration
-            trackCompleteRegistration()
+            trackSignUp()
           }
         })
       })

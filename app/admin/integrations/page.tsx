@@ -331,10 +331,10 @@ export default function IntegrationsPage() {
                 <CardHeader>
                   <CardTitle>Meta Pixel</CardTitle>
                   <CardDescription>
-                    Configure Meta (Facebook) Pixel for conversion tracking
+                    Configure Meta Pixel tracking settings
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="NEXT_PUBLIC_META_PIXEL_ID">Pixel ID</Label>
                     <Input
@@ -342,6 +342,26 @@ export default function IntegrationsPage() {
                       name="NEXT_PUBLIC_META_PIXEL_ID"
                       placeholder="Meta Pixel ID"
                       defaultValue={getInputValue("NEXT_PUBLIC_META_PIXEL_ID")}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Google Analytics</CardTitle>
+                  <CardDescription>
+                    Configure Google Analytics 4 tracking settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="NEXT_PUBLIC_GA_MEASUREMENT_ID">Measurement ID</Label>
+                    <Input
+                      id="NEXT_PUBLIC_GA_MEASUREMENT_ID"
+                      name="NEXT_PUBLIC_GA_MEASUREMENT_ID"
+                      placeholder="G-XXXXXXXXXX"
+                      defaultValue={getInputValue("NEXT_PUBLIC_GA_MEASUREMENT_ID")}
                     />
                   </div>
                 </CardContent>
