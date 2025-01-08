@@ -102,7 +102,7 @@ export default function IntegrationsPage() {
     return (
       <div>
         <AppHeader hideNotifications>
-          <h1 className="text-lg font-semibold">App Integrations</h1>
+          <h1 className="text-lg font-semibold">App Setup</h1>
         </AppHeader>
         <div className="p-6">
           <div className="flex items-center justify-center h-32">
@@ -116,7 +116,7 @@ export default function IntegrationsPage() {
   return (
     <div>
       <AppHeader hideNotifications>
-        <h1 className="text-lg font-semibold">App Integrations</h1>
+        <h1 className="text-lg font-semibold">App Setup</h1>
       </AppHeader>
       <div className="p-6 space-y-6">
         <Alert>

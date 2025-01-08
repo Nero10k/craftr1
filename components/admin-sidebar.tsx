@@ -66,7 +66,7 @@ export function AdminSidebar() {
             >
               <Link href="/admin/integrations" className="px-6">
                 <Settings className="mr-3 h-4 w-4" />
-                App Integrations
+                App Setup
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

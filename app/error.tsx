@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect } from "react"
+import * as React from "react"
 import { Button } from "@/components/ui/button"
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 export default function Error({
   error,
@@ -11,27 +10,23 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  useEffect(() => {
-    // Log the error to an error reporting service
+  React.useEffect(() => {
     console.error(error)
   }, [error])
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center gap-8">
-      <div className="flex flex-col items-center gap-4">
-        <ExclamationTriangleIcon className="h-12 w-12 text-destructive" />
-        <div className="flex flex-col items-center gap-2">
-          <h1 className="text-2xl font-bold">Something went wrong!</h1>
-          <p className="text-muted-foreground">
-            {error.message || "An unexpected error occurred"}
-          </p>
-        </div>
+    <div className="flex h-[100vh] w-full flex-col items-center justify-center gap-4">
+      <div className="space-y-2 text-center">
+        <h1 className="text-4xl font-bold">Something went wrong!</h1>
+        <p className="text-lg text-muted-foreground">
+          An error occurred. Please try again.
+        </p>
       </div>
-      <div className="flex gap-4">
-        <Button onClick={() => reset()}>Try again</Button>
+      <div className="flex items-center gap-2">
         <Button variant="outline" onClick={() => window.location.reload()}>
-          Refresh page
+          Reload page
         </Button>
+        <Button onClick={() => reset()}>Try again</Button>
       </div>
     </div>
   )
