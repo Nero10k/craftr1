@@ -1,4 +1,4 @@
-import { Loader2, Check, Info, AlertTriangle, User2, EuroIcon } from "lucide-react"
+import { Loader2, Check, Info, AlertTriangle, User2, EuroIcon, Euro, Users, Percent, MinusCircle, UserCheck } from "lucide-react"
 
 export const Icons = {
   logo: (props: React.SVGProps<SVGSVGElement>) => (
@@ -32,6 +32,9 @@ export const Icons = {
   check: Check,
   info: Info,
   warning: AlertTriangle,
-  users: User2,
-  euro: EuroIcon,
-} 
+  users: Users,
+  euro: Euro,
+  percent: Percent,
+  minusCircle: MinusCircle,
+  userCheck: UserCheck,
+} as const 
