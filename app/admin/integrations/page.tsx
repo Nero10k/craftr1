@@ -366,6 +366,26 @@ export default function IntegrationsPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>TikTok Pixel</CardTitle>
+                  <CardDescription>
+                    Configure TikTok Pixel tracking settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="NEXT_PUBLIC_TIKTOK_PIXEL_ID">Pixel ID</Label>
+                    <Input
+                      id="NEXT_PUBLIC_TIKTOK_PIXEL_ID"
+                      name="NEXT_PUBLIC_TIKTOK_PIXEL_ID"
+                      placeholder="TikTok Pixel ID"
+                      defaultValue={getInputValue("NEXT_PUBLIC_TIKTOK_PIXEL_ID")}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="realtime" className="space-y-4">
