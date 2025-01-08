@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { siteConfig } from "@/config/site"
-import { Users, Settings, LogOut } from "lucide-react"
+import { Users, Settings, LogOut, BarChart } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -43,6 +43,19 @@ export function AdminSidebar() {
             <h2 className="text-sm font-medium text-muted-foreground">
               Admin Panel
             </h2>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={pathname === "/admin/dashboard"}
+              className="w-full text-sm"
+              size="sm"
+            >
+              <Link href="/admin/dashboard" className="px-6">
+                <BarChart className="mr-3 h-4 w-4" />
+                Dashboard
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
