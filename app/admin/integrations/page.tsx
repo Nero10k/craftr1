@@ -133,7 +133,7 @@ export default function IntegrationsPage() {
               <TabsTrigger value="auth">Authentication</TabsTrigger>
               <TabsTrigger value="billing">Stripe</TabsTrigger>
               <TabsTrigger value="notifications">Chats & Notifications</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="analytics">Pixels</TabsTrigger>
               <TabsTrigger value="realtime">Real-time</TabsTrigger>
             </TabsList>
 
@@ -382,6 +382,26 @@ export default function IntegrationsPage() {
                       name="NEXT_PUBLIC_TIKTOK_PIXEL_ID"
                       placeholder="TikTok Pixel ID"
                       defaultValue={getInputValue("NEXT_PUBLIC_TIKTOK_PIXEL_ID")}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Pinterest Tag</CardTitle>
+                  <CardDescription>
+                    Configure Pinterest Tag tracking settings
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="NEXT_PUBLIC_PINTEREST_TAG_ID">Tag ID</Label>
+                    <Input
+                      id="NEXT_PUBLIC_PINTEREST_TAG_ID"
+                      name="NEXT_PUBLIC_PINTEREST_TAG_ID"
+                      placeholder="Pinterest Tag ID"
+                      defaultValue={getInputValue("NEXT_PUBLIC_PINTEREST_TAG_ID")}
                     />
                   </div>
                 </CardContent>

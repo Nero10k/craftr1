@@ -9,6 +9,7 @@ import { IntercomProvider } from '@/components/intercom-provider'
 import { MetaPixelProvider } from '@/components/meta-pixel-provider'
 import { GoogleAnalyticsProvider } from '@/components/google-analytics-provider'
 import { TikTokPixelProvider } from '@/components/tiktok-pixel-provider'
+import { PinterestTagProvider } from '@/components/pinterest-tag-provider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -90,6 +91,7 @@ export default function RootLayout({
             <MetaPixelProvider />
             <GoogleAnalyticsProvider />
             <TikTokPixelProvider />
+            <PinterestTagProvider />
             {children}
             <Toaster />
           </AuthProvider>
