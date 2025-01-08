@@ -34,6 +34,18 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
 
 interface User {
   id: string
@@ -99,6 +111,183 @@ const columns: ColumnDef<User>[] = [
     accessorKey: "createdAt",
     header: "Joined",
     cell: ({ row }) => format(new Date(row.original.createdAt), "MMM d, yyyy"),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const user = row.original
+      const [open, setOpen] = React.useState(false)
+      const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
+      const [loading, setLoading] = React.useState(false)
+      const [formData, setFormData] = React.useState({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        role: user.role,
+      })
+
+      const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        try {
+          setLoading(true)
+          const response = await fetch(`/api/admin/users/${user.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          })
+
+          if (!response.ok) {
+            throw new Error("Failed to update user")
+          }
+
+          toast.success("User updated successfully")
+          setOpen(false)
+          // Refresh the users list
+          window.location.reload()
+        } catch (error) {
+          console.error("Error updating user:", error)
+          toast.error("Failed to update user")
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      const handleDelete = async () => {
+        try {
+          setLoading(true)
+          const response = await fetch(`/api/admin/users/${user.id}`, {
+            method: "DELETE",
+          })
+
+          if (!response.ok) {
+            throw new Error("Failed to delete user")
+          }
+
+          toast.success("User deleted successfully")
+          setDeleteDialogOpen(false)
+          // Refresh the users list
+          window.location.reload()
+        } catch (error) {
+          console.error("Error deleting user:", error)
+          toast.error("Failed to delete user")
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      return (
+        <>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => setOpen(true)}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit user
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={() => setDeleteDialogOpen(true)}
+                  className="text-red-600 focus:text-red-600"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete user
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit User</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="firstName">First name</Label>
+                    <Input
+                      id="firstName"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="lastName">Last name</Label>
+                    <Input
+                      id="lastName"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="role">Role</Label>
+                    <Select
+                      value={formData.role}
+                      onValueChange={(value: UserRole) => setFormData({ ...formData, role: value })}
+                    >
+                      <SelectTrigger id="role">
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="USER">User</SelectItem>
+                        <SelectItem value="SUPPORT">Support</SelectItem>
+                        <SelectItem value="ADMIN">Admin</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setOpen(false)}
+                    disabled={loading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? "Saving..." : "Save changes"}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete User</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to delete this user? This action cannot be undone.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex justify-end space-x-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setDeleteDialogOpen(false)}
+                  disabled={loading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={loading}
+                >
+                  {loading ? "Deleting..." : "Delete"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
+      )
+    },
   },
 ]
 
