@@ -2,6 +2,7 @@ import { UserRole } from "@prisma/client"
 import { getToken } from "next-auth/jwt"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { getRateLimiterByPath, getRateLimitIdentifier } from "@/lib/rate-limit"
 
 // Configure which routes should be protected
 const protectedPaths = [
@@ -30,6 +31,29 @@ const authRoutes = [
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isDevelopment = process.env.NODE_ENV === "development"
+
+  // Apply rate limiting for API routes
+  if (path.startsWith('/api/')) {
+    try {
+      const ip = getRateLimitIdentifier(request)
+      const limiter = getRateLimiterByPath(path)
+      const { success, limit, reset, remaining } = await limiter.limit(ip)
+
+      if (!success) {
+        return new NextResponse('Too Many Requests', {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': limit.toString(),
+            'X-RateLimit-Remaining': remaining.toString(),
+            'X-RateLimit-Reset': reset.toString(),
+          },
+        })
+      }
+    } catch (error) {
+      console.error('Rate limiting error:', error)
+      // Continue even if rate limiting fails
+    }
+  }
 
   // Allow unrestricted access to /admin and /admin/integrations in development
   if (isDevelopment && (path === "/admin" || path === "/admin/integrations")) {
@@ -87,12 +111,11 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except:
-     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public folder
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\..*|$).*)",
   ],
 } 

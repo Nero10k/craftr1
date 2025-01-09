@@ -159,6 +159,35 @@ export default function IntegrationsPage() {
                       Your PostgreSQL connection string. For local development, you can use: postgresql://user:password@localhost:5432/dbname
                     </p>
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="UPSTASH_REDIS_REST_URL">Upstash Redis URL</Label>
+                    <Input
+                      id="UPSTASH_REDIS_REST_URL"
+                      name="UPSTASH_REDIS_REST_URL"
+                      type="password"
+                      placeholder="https://your-url.upstash.io"
+                      defaultValue={getInputValue("UPSTASH_REDIS_REST_URL")}
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Your Upstash Redis REST URL for rate limiting and caching
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="UPSTASH_REDIS_REST_TOKEN">Upstash Redis Token</Label>
+                    <Input
+                      id="UPSTASH_REDIS_REST_TOKEN"
+                      name="UPSTASH_REDIS_REST_TOKEN"
+                      type="password"
+                      placeholder="Your Upstash Redis REST token"
+                      defaultValue={getInputValue("UPSTASH_REDIS_REST_TOKEN")}
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Your Upstash Redis REST token for authentication
+                    </p>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="NEXTAUTH_SECRET">NextAuth Secret</Label>
                     <Input

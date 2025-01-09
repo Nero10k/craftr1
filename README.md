@@ -53,3 +53,26 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Rate Limiting
+
+This project includes built-in rate limiting using Upstash Redis. Rate limits are configured for different types of routes:
+
+- Auth endpoints: 10 requests per minute
+- API endpoints: 100 requests per minute
+- Admin endpoints: 300 requests per minute
+- Stripe webhooks: 50 requests per minute
+
+### Setup Rate Limiting
+
+1. Create a free account at [Upstash](https://upstash.com/)
+2. Create a new Redis database
+3. Copy your REST URL and REST Token
+4. Add them to your `.env` file:
+
+```bash
+UPSTASH_REDIS_REST_URL=your_rest_url
+UPSTASH_REDIS_REST_TOKEN=your_rest_token
+```
+
+The rate limiting will automatically work for all API routes. When limits are exceeded, the API will return a 429 status code with appropriate rate limit headers.
