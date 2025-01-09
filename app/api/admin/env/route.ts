@@ -45,6 +45,10 @@ const variableCategories: Record<string, { header: string, variables: string[] }
       "UPSTASH_REDIS_REST_TOKEN"
     ]
   },
+  openai: {
+    header: "# OpenAI",
+    variables: ["OPENAI_API_KEY"]
+  },
   intercom: {
     header: "# Optional: Intercom Integration",
     variables: ["NEXT_PUBLIC_INTERCOM_APP_ID"]

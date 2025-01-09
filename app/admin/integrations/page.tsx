@@ -132,6 +132,7 @@ export default function IntegrationsPage() {
               <TabsTrigger value="setup">Setup</TabsTrigger>
               <TabsTrigger value="auth">Authentication</TabsTrigger>
               <TabsTrigger value="billing">Stripe</TabsTrigger>
+              <TabsTrigger value="openai">OpenAI</TabsTrigger>
               <TabsTrigger value="notifications">Chats & Notifications</TabsTrigger>
               <TabsTrigger value="analytics">Pixels</TabsTrigger>
               <TabsTrigger value="realtime">Real-time</TabsTrigger>
@@ -298,6 +299,45 @@ export default function IntegrationsPage() {
                       placeholder="Stripe Price ID for Pro Plan"
                       defaultValue={getInputValue("STRIPE_PRO_PRICE_ID")}
                     />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="openai" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>OpenAI Integration</CardTitle>
+                  <CardDescription>
+                    Add AI capabilities to your app. You can set this up later - the app works perfectly without it.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="OPENAI_API_KEY">
+                      API Key
+                      <span className="ml-2 text-xs text-muted-foreground">(Optional)</span>
+                    </Label>
+                    <Input
+                      id="OPENAI_API_KEY"
+                      name="OPENAI_API_KEY"
+                      type="password"
+                      placeholder="sk-..."
+                      defaultValue={getInputValue("OPENAI_API_KEY")}
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Your OpenAI API key. Get one from <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="underline">OpenAI Dashboard</a>. 
+                      Leave empty if you don't plan to use AI features yet.
+                    </p>
+                  </div>
+                  <div className="mt-4 p-4 bg-muted rounded-lg">
+                    <h4 className="font-medium mb-2">What you can do with OpenAI:</h4>
+                    <ul className="text-sm text-muted-foreground space-y-2">
+                      <li>• Generate content and emails</li>
+                      <li>• Process and analyze data</li>
+                      <li>• Create AI-powered features</li>
+                      <li>• Add chatbots and assistants</li>
+                    </ul>
                   </div>
                 </CardContent>
               </Card>
