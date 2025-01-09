@@ -31,14 +31,26 @@ const variableCategories: Record<string, { header: string, variables: string[] }
   },
   stripe: {
     header: "# Stripe",
-    variables: ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPE_PRO_PRICE_ID"]
+    variables: [
+      "STRIPE_SECRET_KEY",
+      "STRIPE_WEBHOOK_SECRET",
+      "STRIPE_PRO_PRICE_ID",
+      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
+    ]
+  },
+  redis: {
+    header: "# Upstash Redis (Rate Limiting & Background Jobs)",
+    variables: [
+      "UPSTASH_REDIS_REST_URL",
+      "UPSTASH_REDIS_REST_TOKEN"
+    ]
   },
   intercom: {
     header: "# Optional: Intercom Integration",
     variables: ["NEXT_PUBLIC_INTERCOM_APP_ID"]
   },
   metaPixel: {
-    header: "# Optional: Meta Pixel Tracking",
+    header: "# Optional: Meta Pixel",
     variables: ["NEXT_PUBLIC_META_PIXEL_ID"]
   },
   telegram: {
@@ -48,6 +60,16 @@ const variableCategories: Record<string, { header: string, variables: string[] }
   pusher: {
     header: "# Optional: Pusher (Real-time)",
     variables: ["PUSHER_APP_ID", "PUSHER_SECRET", "NEXT_PUBLIC_PUSHER_KEY", "NEXT_PUBLIC_PUSHER_CLUSTER"]
+  },
+  analytics: {
+    header: "# Analytics",
+    variables: [
+      "NEXT_PUBLIC_GA_MEASUREMENT_ID",
+      "NEXT_PUBLIC_TIKTOK_PIXEL_ID",
+      "NEXT_PUBLIC_PINTEREST_TAG_ID",
+      "NEXT_PUBLIC_TWITTER_PIXEL_ID",
+      "NEXT_PUBLIC_LINKEDIN_TAG_ID"
+    ]
   }
 }
 

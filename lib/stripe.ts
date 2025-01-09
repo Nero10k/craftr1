@@ -20,6 +20,10 @@ export const createCheckoutSession = async ({
   successUrl?: string
   cancelUrl?: string
 }) => {
+  if (!stripe) {
+    throw new Error('Stripe is not properly initialized')
+  }
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
@@ -43,6 +47,10 @@ export const createCheckoutSession = async ({
 }
 
 export const createBillingPortalSession = async (customerId: string) => {
+  if (!stripe) {
+    throw new Error('Stripe is not properly initialized')
+  }
+
   try {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
@@ -62,6 +70,10 @@ export const validateStripeWebhookRequest = (
   body: string,
   signature: string,
 ) => {
+  if (!stripe) {
+    throw new Error('Stripe is not properly initialized')
+  }
+
   try {
     return stripe.webhooks.constructEvent(
       body,

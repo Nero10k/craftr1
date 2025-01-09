@@ -76,3 +76,50 @@ UPSTASH_REDIS_REST_TOKEN=your_rest_token
 ```
 
 The rate limiting will automatically work for all API routes. When limits are exceeded, the API will return a 429 status code with appropriate rate limit headers.
+
+## Background Job Processing
+
+This project includes built-in background job processing using Bull and Redis. The following job queues are configured:
+
+- Email Queue: For sending transactional emails asynchronously
+- Stripe Webhook Queue: For processing Stripe webhook events
+- Notification Queue: For handling user notifications (email, push, in-app)
+
+### Features
+
+- Automatic retries with exponential backoff
+- Job progress tracking
+- Error handling and logging
+- Queue monitoring capabilities
+- Persistent job storage using Redis
+
+### Setup Background Jobs
+
+1. Make sure you have Redis configured (same Redis instance used for rate limiting)
+2. Jobs will be automatically processed in the background
+3. Failed jobs will be retried up to 3 times with exponential backoff
+
+### Usage Examples
+
+```typescript
+// Queue an email
+import { queueEmail } from '@/lib/queue/processors';
+
+await queueEmail({
+  to: 'user@example.com',
+  subject: 'Welcome!',
+  html: '<h1>Welcome to our platform!</h1>',
+});
+
+// Queue a notification
+import { queueNotification } from '@/lib/queue/processors';
+
+await queueNotification({
+  userId: 'user_123',
+  type: 'in_app',
+  title: 'New Message',
+  message: 'You have a new message',
+});
+```
+
+Stripe webhooks are automatically queued for processing to ensure reliable handling of subscription events.
