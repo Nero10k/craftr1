@@ -1,12 +1,12 @@
 import { withOpenAI } from './config';
 
 /**
- * Generate a completion using GPT-4
+ * Generate a completion using GPT-4o
  * Returns null if OpenAI is not configured
  */
 export async function generateCompletion({
   prompt,
-  model = 'gpt-4',
+  model = 'gpt-4o',
   temperature = 0.7,
   max_tokens = 500,
 }: {
@@ -48,7 +48,7 @@ export async function generateEmbedding(text: string) {
  */
 export async function streamCompletion({
   messages,
-  model = 'gpt-4',
+  model = 'gpt-4o',
   temperature = 0.7,
 }: {
   messages: { role: 'user' | 'assistant' | 'system'; content: string }[];
