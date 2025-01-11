@@ -34,6 +34,11 @@ export async function middleware(request: NextRequest) {
 
   // Apply rate limiting for API routes
   if (path.startsWith('/api/')) {
+    // Skip rate limiting for auth routes in development
+    if (process.env.NODE_ENV === "development" && path.startsWith('/api/auth')) {
+      return NextResponse.next()
+    }
+
     try {
       const ip = getRateLimitIdentifier(request)
       const limiter = getRateLimiterByPath(path)

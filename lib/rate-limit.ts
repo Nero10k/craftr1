@@ -9,34 +9,34 @@ export const redis = new Redis({
 
 // Rate limit configurations for different routes
 export const rateLimiter = {
-  // Auth endpoints: 10 requests per minute
+  // Auth endpoints: 50 requests per minute
   auth: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(10, '1 m'),
+    limiter: Ratelimit.slidingWindow(50, '1 m'),
     analytics: true,
     prefix: 'ratelimit:auth',
   }),
 
-  // API endpoints: 100 requests per minute
+  // API endpoints: 200 requests per minute
   api: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(100, '1 m'),
+    limiter: Ratelimit.slidingWindow(200, '1 m'),
     analytics: true,
     prefix: 'ratelimit:api',
   }),
 
-  // Admin endpoints: 300 requests per minute
+  // Admin endpoints: 500 requests per minute
   admin: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(300, '1 m'),
+    limiter: Ratelimit.slidingWindow(500, '1 m'),
     analytics: true,
     prefix: 'ratelimit:admin',
   }),
 
-  // Stripe webhooks: 50 requests per minute
+  // Stripe webhooks: 100 requests per minute
   stripe: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(50, '1 m'),
+    limiter: Ratelimit.slidingWindow(100, '1 m'),
     analytics: true,
     prefix: 'ratelimit:stripe',
   }),
