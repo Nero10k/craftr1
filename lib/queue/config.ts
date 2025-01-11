@@ -2,8 +2,14 @@ import Queue from 'bull';
 
 // Redis connection configuration from Upstash
 const redisConfig = {
-  redis: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  redis: {
+    port: 6379,
+    host: process.env.UPSTASH_REDIS_REST_URL,
+    password: process.env.UPSTASH_REDIS_REST_TOKEN,
+    tls: {
+      rejectUnauthorized: false
+    }
+  }
 };
 
 // Define queue names as constants

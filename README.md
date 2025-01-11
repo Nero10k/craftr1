@@ -54,16 +54,9 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Rate Limiting
+## Rate Limiting and Background Jobs
 
-This project includes built-in rate limiting using Upstash Redis. Rate limits are configured for different types of routes:
-
-- Auth endpoints: 10 requests per minute
-- API endpoints: 100 requests per minute
-- Admin endpoints: 300 requests per minute
-- Stripe webhooks: 50 requests per minute
-
-### Setup Rate Limiting
+This project uses Upstash Redis for both rate limiting and background job processing. You'll need to set up a Redis instance through Upstash:
 
 1. Create a free account at [Upstash](https://upstash.com/)
 2. Create a new Redis database
@@ -75,29 +68,31 @@ UPSTASH_REDIS_REST_URL=your_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_rest_token
 ```
 
+### Rate Limiting
+
+Rate limits are configured for different types of routes:
+
+- Auth endpoints: 50 requests per minute
+- API endpoints: 200 requests per minute
+- Admin endpoints: 500 requests per minute
+- Stripe webhooks: 100 requests per minute
+
 The rate limiting will automatically work for all API routes. When limits are exceeded, the API will return a 429 status code with appropriate rate limit headers.
 
-## Background Job Processing
+### Background Job Processing
 
-This project includes built-in background job processing using Bull and Redis. The following job queues are configured:
+The following job queues are configured using Bull and the same Upstash Redis instance:
 
 - Email Queue: For sending transactional emails asynchronously
 - Stripe Webhook Queue: For processing Stripe webhook events
 - Notification Queue: For handling user notifications (email, push, in-app)
 
-### Features
-
+Features:
 - Automatic retries with exponential backoff
 - Job progress tracking
 - Error handling and logging
 - Queue monitoring capabilities
 - Persistent job storage using Redis
-
-### Setup Background Jobs
-
-1. Make sure you have Redis configured (same Redis instance used for rate limiting)
-2. Jobs will be automatically processed in the background
-3. Failed jobs will be retried up to 3 times with exponential backoff
 
 ### Usage Examples
 
