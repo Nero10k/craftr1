@@ -32,6 +32,23 @@ pnpm dev
 
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Easy Git Management
+
+This template includes a user-friendly git helper tool that simplifies common git operations. Instead of using traditional git commands, just use:
+
+```bash
+pnpm git
+```
+
+This will open an interactive menu with the following options:
+1. Save changes (add & commit)
+2. Push changes to GitHub
+3. Pull latest changes
+4. Check status
+5. Exit
+
+Simply choose a number and follow the prompts. No git command knowledge required!
+
 ## Project Structure
 
 ```
