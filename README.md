@@ -123,3 +123,53 @@ await queueNotification({
 ```
 
 Stripe webhooks are automatically queued for processing to ensure reliable handling of subscription events.
+
+## Image Upload Configuration
+
+This project uses AWS S3 for image uploads (profile pictures). This is optional - the app will work without S3 configured, but users won't be able to upload profile pictures. If you need any other upload functionality or file storage, you will need to set this up.
+
+### Setting up AWS S3
+
+1. Create an AWS account if you don't have one
+2. Create a new S3 bucket:
+   - Go to S3 in AWS Console
+   - Click "Create bucket"
+   - Choose a unique bucket name
+   - Select a region (remember this for configuration)
+   - Under "Block Public Access settings", uncheck "Block all public access" (since we need public read access for images)
+   - Click "Create bucket"
+
+3. Create an IAM user with S3 access:
+   - Go to IAM in AWS Console
+   - Create a new user
+   - Attach the `AmazonS3FullAccess` policy (or create a custom policy with more restricted permissions)
+   - Save the Access Key ID and Secret Access Key
+
+4. Configure your bucket for public access:
+   - Go to your bucket
+   - Click "Permissions"
+   - Under "Bucket Policy", add this policy (replace `your-bucket-name`):
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Sid": "PublicRead",
+         "Effect": "Allow",
+         "Principal": "*",
+         "Action": ["s3:GetObject"],
+         "Resource": ["arn:aws:s3:::your-bucket-name/*"]
+       }
+     ]
+   }
+   ```
+
+5. Add these variables to your `.env` file:
+   ```bash
+   AWS_ACCESS_KEY_ID=your_access_key_id
+   AWS_SECRET_ACCESS_KEY=your_secret_access_key
+   AWS_REGION=your_bucket_region
+   AWS_BUCKET_NAME=your_bucket_name
+   ```
+
+The app will automatically detect if S3 is configured and enable/disable image upload functionality accordingly.

@@ -226,6 +226,62 @@ export default function IntegrationsPage() {
                       The URL where your application is hosted. Should match APP_URL for local development
                     </p>
                   </div>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>File Upload (AWS S3)</CardTitle>
+                      <CardDescription>
+                        Configure AWS S3 for file uploads and image storage. This is optional - the app will work without it, but users won't be able to upload profile pictures.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="AWS_ACCESS_KEY_ID">Access Key ID</Label>
+                        <Input
+                          id="AWS_ACCESS_KEY_ID"
+                          name="AWS_ACCESS_KEY_ID"
+                          type="password"
+                          placeholder="AWS Access Key ID"
+                          defaultValue={getInputValue("AWS_ACCESS_KEY_ID")}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="AWS_SECRET_ACCESS_KEY">Secret Access Key</Label>
+                        <Input
+                          id="AWS_SECRET_ACCESS_KEY"
+                          name="AWS_SECRET_ACCESS_KEY"
+                          type="password"
+                          placeholder="AWS Secret Access Key"
+                          defaultValue={getInputValue("AWS_SECRET_ACCESS_KEY")}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="AWS_REGION">Region</Label>
+                        <Input
+                          id="AWS_REGION"
+                          name="AWS_REGION"
+                          placeholder="e.g., eu-north-1"
+                          defaultValue={getInputValue("AWS_REGION")}
+                        />
+                        <p className="text-sm text-muted-foreground">
+                          The AWS region where your S3 bucket is located (e.g., eu-north-1, us-east-1)
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="AWS_BUCKET_NAME">Bucket Name</Label>
+                        <Input
+                          id="AWS_BUCKET_NAME"
+                          name="AWS_BUCKET_NAME"
+                          placeholder="your-bucket-name"
+                          defaultValue={getInputValue("AWS_BUCKET_NAME")}
+                        />
+                        <p className="text-sm text-muted-foreground">
+                          The name of your S3 bucket. Make sure it's configured for public read access.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
                 </CardContent>
               </Card>
             </TabsContent>
