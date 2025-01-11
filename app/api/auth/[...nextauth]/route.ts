@@ -116,6 +116,19 @@ export const authOptions: AuthOptions = {
         token.stripeCurrentPeriodEnd = user.stripeCurrentPeriodEnd
       }
 
+      // Always fetch fresh user data for the image
+      if (token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: {
+            image: true,
+          }
+        })
+        if (dbUser) {
+          token.picture = dbUser.image
+        }
+      }
+
       if (account?.provider === 'google' && profile) {
         const nameParts = profile.name?.split(' ') || []
         token.firstName = nameParts[0] || ''

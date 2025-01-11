@@ -102,6 +102,17 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === 'google' && profile?.picture) {
+        // Update user's image with Google profile picture
+        await prisma.user.update({
+          where: { email: user.email! },
+          data: { image: profile.picture }
+        })
+        user.image = profile.picture
+      }
+      return true
+    },
     async session({ session, token, user }) {
       if (token) {
         session.user.id = token.id as string

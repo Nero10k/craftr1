@@ -33,7 +33,6 @@ export async function uploadImageToS3(
       Key: key,
       Body: file,
       ContentType: contentType,
-      ACL: 'public-read', // Make sure your bucket policy allows this
     })
 
     await s3Client.send(command)
