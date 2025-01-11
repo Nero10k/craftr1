@@ -1,9 +1,10 @@
 "use client"
 
+import { Suspense } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
-export default function NotFound() {
+function NotFoundContent() {
   return (
     <div className="flex h-[100vh] w-full flex-col items-center justify-center gap-4">
       <div className="space-y-2 text-center">
@@ -21,5 +22,13 @@ export default function NotFound() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function NotFound() {
+  return (
+    <Suspense>
+      <NotFoundContent />
+    </Suspense>
   )
 } 

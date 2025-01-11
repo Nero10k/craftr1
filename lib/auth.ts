@@ -8,6 +8,7 @@ import { UserRole } from '@prisma/client'
 import { JWT } from 'next-auth/jwt'
 import { Session, User, Account, Profile } from 'next-auth'
 import { AdapterUser } from 'next-auth/adapters'
+import { handleUserRegistration } from '@/lib/telegram/telegram-events'
 
 type Role = UserRole
 
@@ -38,6 +39,15 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
+  },
+  events: {
+    createUser: async (message) => {
+      // Handle new user registration
+      await handleUserRegistration({
+        email: message.user.email!,
+        name: message.user.name || undefined,
+      })
+    },
   },
   providers: [
     GoogleProvider({

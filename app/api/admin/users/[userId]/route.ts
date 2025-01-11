@@ -4,7 +4,7 @@ import { UserRole } from "@prisma/client"
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     // Allow access in development mode without authentication
@@ -12,7 +12,7 @@ export async function PATCH(
       return new NextResponse("Not available in production", { status: 403 })
     }
 
-    const userId = params.userId
+    const userId = (await params).userId
     const data = await request.json()
 
     // Validate input
@@ -44,7 +44,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     // Allow access in development mode without authentication
@@ -52,7 +52,7 @@ export async function DELETE(
       return new NextResponse("Not available in production", { status: 403 })
     }
 
-    const userId = params.userId
+    const userId = (await params).userId
 
     // Validate input
     if (!userId) {

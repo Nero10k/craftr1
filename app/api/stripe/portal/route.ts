@@ -29,6 +29,10 @@ export async function POST() {
       return new NextResponse('No billing history', { status: 400 })
     }
 
+    if (!stripe) {
+      return new NextResponse('Stripe is not configured', { status: 500 })
+    }
+
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: user.stripeCustomerId,
       return_url: billingUrl,

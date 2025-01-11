@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -89,13 +89,15 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <IntercomProvider />
-            <MetaPixelProvider />
-            <GoogleAnalyticsProvider />
-            <TikTokPixelProvider />
-            <PinterestTagProvider />
-            <TwitterPixelProvider />
-            <LinkedInTagProvider />
+            <Suspense>
+              <IntercomProvider />
+              <MetaPixelProvider />
+              <GoogleAnalyticsProvider />
+              <TikTokPixelProvider />
+              <PinterestTagProvider />
+              <TwitterPixelProvider />
+              <LinkedInTagProvider />
+            </Suspense>
             {children}
             <Toaster />
           </AuthProvider>
