@@ -12,5 +12,5 @@ export const routes = {
   signup: "/signup",
   forgotPassword: "/forgot-password",
   dashboard: "/home",
-  login: "/login"
+  login: "/"
 } as const 
