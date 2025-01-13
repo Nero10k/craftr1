@@ -114,4 +114,3 @@ async function generateContent(agent: any) {
     topic: agent.topics[0]
   }
 } 
-} 
