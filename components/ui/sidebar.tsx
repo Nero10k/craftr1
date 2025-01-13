@@ -34,6 +34,7 @@ type SidebarContext = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  variant?: "default" | "inset"
 }
 
 const SidebarContext = React.createContext<SidebarContext | null>(null)
@@ -53,6 +54,7 @@ const SidebarProvider = React.forwardRef<
     defaultOpen?: boolean
     open?: boolean
     onOpenChange?: (open: boolean) => void
+    variant?: "default" | "inset"
   }
 >(
   (
@@ -60,6 +62,7 @@ const SidebarProvider = React.forwardRef<
       defaultOpen = true,
       open: openProp,
       onOpenChange: setOpenProp,
+      variant = "default",
       className,
       style,
       children,
@@ -125,8 +128,9 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        variant,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, variant]
     )
 
     return (
@@ -158,105 +162,53 @@ SidebarProvider.displayName = "SidebarProvider"
 
 const Sidebar = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> & {
+  React.ComponentProps<"aside"> & {
     side?: "left" | "right"
-    variant?: "sidebar" | "floating" | "inset"
-    collapsible?: "offcanvas" | "icon" | "none"
+    collapsible?: "offcanvas" | "inline"
   }
->(
-  (
-    {
-      side = "left",
-      variant = "sidebar",
-      collapsible = "offcanvas",
-      className,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+>(({ className, side = "left", collapsible = "inline", ...props }, ref) => {
+  const { state, open, openMobile, setOpenMobile, isMobile, variant } = useSidebar()
 
-    if (collapsible === "none") {
-      return (
-        <div
-          className={cn(
-            "flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground",
-            className
-          )}
-          ref={ref}
-          {...props}
-        >
-          {children}
-        </div>
-      )
-    }
-
-    if (isMobile) {
-      return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+  return (
+    <>
+      <aside
+        ref={ref}
+        data-state={state}
+        data-side={side}
+        data-collapsible={collapsible}
+        data-variant={variant}
+        className={cn(
+          "peer relative z-30 flex h-full flex-col bg-sidebar transition-[width] duration-300 ease-in-out",
+          "data-[state=collapsed]:w-[--sidebar-width-icon] data-[state=expanded]:w-[--sidebar-width]",
+          "data-[variant=inset]:md:rounded-xl data-[variant=inset]:md:shadow",
+          "data-[collapsible=offcanvas]:fixed data-[collapsible=offcanvas]:top-0 data-[collapsible=offcanvas]:w-[--sidebar-width] data-[collapsible=offcanvas]:data-[state=collapsed]:-translate-x-full data-[collapsible=offcanvas]:data-[state=expanded]:translate-x-0",
+          "[[data-side=right]&]:right-0 [[data-side=right]&]:data-[collapsible=offcanvas]:data-[state=collapsed]:translate-x-full [[data-side=right]&]:data-[collapsible=offcanvas]:data-[state=expanded]:-translate-x-0",
+          className
+        )}
+        style={{
+          "--sidebar-width": isMobile ? SIDEBAR_WIDTH_MOBILE : SIDEBAR_WIDTH,
+          "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+        } as React.CSSProperties}
+        {...props}
+      />
+      {isMobile && (
+        <Sheet open={openMobile} onOpenChange={setOpenMobile}>
           <SheetContent
-            data-sidebar="sidebar"
-            data-mobile="true"
-            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+            side={side}
+            className="w-[--sidebar-width] bg-sidebar p-0 pt-10"
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
               } as React.CSSProperties
             }
-            side={side}
           >
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <Slot>{props.children}</Slot>
           </SheetContent>
         </Sheet>
-      )
-    }
-
-    return (
-      <div
-        ref={ref}
-        className="group peer hidden md:block text-sidebar-foreground"
-        data-state={state}
-        data-collapsible={state === "collapsed" ? collapsible : ""}
-        data-variant={variant}
-        data-side={side}
-      >
-        {/* This is what handles the sidebar gap on desktop */}
-        <div
-          className={cn(
-            "duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
-            "group-data-[collapsible=offcanvas]:w-0",
-            "group-data-[side=right]:rotate-180",
-            variant === "floating" || variant === "inset"
-              ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
-              : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]"
-          )}
-        />
-        <div
-          className={cn(
-            "duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
-            side === "left"
-              ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
-              : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-            // Adjust the padding for floating and inset variants.
-            variant === "floating" || variant === "inset"
-              ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
-              : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
-            className
-          )}
-          {...props}
-        >
-          <div
-            data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
-          >
-            {children}
-          </div>
-        </div>
-      </div>
-    )
-  }
-)
+      )}
+    </>
+  )
+})
 Sidebar.displayName = "Sidebar"
 
 const SidebarTrigger = React.forwardRef<

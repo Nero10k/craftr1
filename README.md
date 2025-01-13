@@ -1,187 +1,131 @@
-# CRAFTR SaaS Template
+# CRAFTR - AI Content Generator
 
-A modern, full-featured Next.js boilerplate for SaaS applications with authentication, beautiful UI components, and best practices built-in.
+CRAFTR is a powerful AI-powered content generation platform built with Next.js, featuring automated content creation, scheduling, and LinkedIn integration.
 
 ## Features
 
-- 🚀 Built with Next.js 15
-- 🎨 Styled with Tailwind CSS
-- 🔒 Authentication ready
-- 🎯 TypeScript support
-- 📱 Responsive design
-- 🌙 Dark mode support
-- 🧩 Modular component architecture
-- 🔧 Easy to customize
+- 🤖 AI-powered content generation
+- 📅 Content scheduling
+- 📊 Performance analytics
+- 🔄 Automated posting
+- 🔗 LinkedIn integration
+- 📈 Analytics tracking
+
+## Tech Stack
+
+- Next.js 13 (App Router)
+- TypeScript
+- Prisma (PostgreSQL)
+- NextAuth.js
+- Tailwind CSS
+- shadcn/ui
+- OpenAI API
+- LinkedIn API
 
 ## Getting Started
 
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL database
+- OpenAI API key
+- LinkedIn Developer account
+
+### Installation
+
 1. Clone the repository:
-```bash
-git clone https://github.com/CRAFTR-Netherlands/CRAFTR-SaaS-Template.git
-```
+   ```bash
+   git clone https://github.com/yourusername/craftr.git
+   cd craftr
+   ```
 
 2. Install dependencies:
-```bash
-pnpm install
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+   Fill in your environment variables in `.env`
+
+4. Set up the database:
+   ```bash
+   npx prisma migrate dev
+   ```
+
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+### Environment Variables
+
+Required environment variables:
+
+```env
+DATABASE_URL=
+NEXTAUTH_URL=
+NEXTAUTH_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+OPENAI_API_KEY=
+STRIPE_API_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRO_MONTHLY_PLAN_ID=
 ```
 
-3. Start the development server:
-```bash
-pnpm dev
+For LinkedIn integration:
+```env
+LINKEDIN_CLIENT_ID=
+LINKEDIN_CLIENT_SECRET=
+LINKEDIN_ACCESS_TOKEN=
+LINKEDIN_ORGANIZATION_ID=
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-## Easy Git Management
+The app is configured for deployment on Vercel with GitHub Actions.
 
-This template includes a user-friendly git helper tool that simplifies common git operations. Instead of using traditional git commands, just use:
+### Setup GitHub Actions
 
-```bash
-pnpm git
-```
+1. Fork this repository
+2. Add the following secrets to your GitHub repository:
+   - `DATABASE_URL`
+   - `NEXTAUTH_URL`
+   - `NEXTAUTH_SECRET`
+   - `GOOGLE_CLIENT_ID`
+   - `GOOGLE_CLIENT_SECRET`
+   - `OPENAI_API_KEY`
+   - `STRIPE_API_KEY`
+   - `STRIPE_WEBHOOK_SECRET`
+   - `STRIPE_PRO_MONTHLY_PLAN_ID`
+   - `VERCEL_TOKEN`
+   - `VERCEL_ORG_ID`
+   - `VERCEL_PROJECT_ID`
 
-This will open an interactive menu with the following options:
-1. Save changes (add & commit)
-2. Push changes to GitHub
-3. Pull latest changes
-4. Check status
-5. Exit
+3. Push to the main branch to trigger deployment
 
-Simply choose a number and follow the prompts. No git command knowledge required!
+### Manual Deployment
 
-## Project Structure
+1. Install Vercel CLI:
+   ```bash
+   npm i -g vercel
+   ```
 
-```
-├── app/                    # Next.js app directory
-├── components/            # React components
-│   ├── auth/             # Authentication components
-│   ├── layouts/          # Layout components
-│   ├── shared/           # Shared components
-│   └── ui/               # UI components
-├── hooks/                # Custom React hooks
-├── lib/                  # Utility functions and constants
-└── public/              # Static files
-```
+2. Deploy:
+   ```bash
+   vercel --prod
+   ```
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. Fork the repository
+2. Create a new branch
+3. Make your changes
+4. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Rate Limiting and Background Jobs
-
-This project uses Upstash Redis for both rate limiting and background job processing. You'll need to set up a Redis instance through Upstash:
-
-1. Create a free account at [Upstash](https://upstash.com/)
-2. Create a new Redis database
-3. Copy your REST URL and REST Token
-4. Add them to your `.env` file:
-
-```bash
-UPSTASH_REDIS_REST_URL=your_rest_url
-UPSTASH_REDIS_REST_TOKEN=your_rest_token
-```
-
-### Rate Limiting
-
-Rate limits are configured for different types of routes:
-
-- Auth endpoints: 50 requests per minute
-- API endpoints: 200 requests per minute
-- Admin endpoints: 500 requests per minute
-- Stripe webhooks: 100 requests per minute
-
-The rate limiting will automatically work for all API routes. When limits are exceeded, the API will return a 429 status code with appropriate rate limit headers.
-
-### Background Job Processing
-
-The following job queues are configured using Bull and the same Upstash Redis instance:
-
-- Email Queue: For sending transactional emails asynchronously
-- Stripe Webhook Queue: For processing Stripe webhook events
-- Notification Queue: For handling user notifications (email, push, in-app)
-
-Features:
-- Automatic retries with exponential backoff
-- Job progress tracking
-- Error handling and logging
-- Queue monitoring capabilities
-- Persistent job storage using Redis
-
-### Usage Examples
-
-```typescript
-// Queue an email
-import { queueEmail } from '@/lib/queue/processors';
-
-await queueEmail({
-  to: 'user@example.com',
-  subject: 'Welcome!',
-  html: '<h1>Welcome to our platform!</h1>',
-});
-
-// Queue a notification
-import { queueNotification } from '@/lib/queue/processors';
-
-await queueNotification({
-  userId: 'user_123',
-  type: 'in_app',
-  title: 'New Message',
-  message: 'You have a new message',
-});
-```
-
-Stripe webhooks are automatically queued for processing to ensure reliable handling of subscription events.
-
-## Image Upload Configuration
-
-This project uses AWS S3 for image uploads (profile pictures). This is optional - the app will work without S3 configured, but users won't be able to upload profile pictures. If you need any other upload functionality or file storage, you will need to set this up.
-
-### Setting up AWS S3
-
-1. Create an AWS account if you don't have one
-2. Create a new S3 bucket:
-   - Go to S3 in AWS Console
-   - Click "Create bucket"
-   - Choose a unique bucket name
-   - Select a region (remember this for configuration)
-   - Under "Block Public Access settings", uncheck "Block all public access" (since we need public read access for images)
-   - Click "Create bucket"
-
-3. Create an IAM user with S3 access:
-   - Go to IAM in AWS Console
-   - Create a new user
-   - Attach the `AmazonS3FullAccess` policy (or create a custom policy with more restricted permissions)
-   - Save the Access Key ID and Secret Access Key
-
-4. Configure your bucket for public access:
-   - Go to your bucket
-   - Click "Permissions"
-   - Under "Bucket Policy", add this policy (replace `your-bucket-name`):
-   ```json
-   {
-     "Version": "2012-10-17",
-     "Statement": [
-       {
-         "Sid": "PublicRead",
-         "Effect": "Allow",
-         "Principal": "*",
-         "Action": ["s3:GetObject"],
-         "Resource": ["arn:aws:s3:::your-bucket-name/*"]
-       }
-     ]
-   }
-   ```
-
-5. Add these variables to your `.env` file:
-   ```bash
-   AWS_ACCESS_KEY_ID=your_access_key_id
-   AWS_SECRET_ACCESS_KEY=your_secret_access_key
-   AWS_REGION=your_bucket_region
-   AWS_BUCKET_NAME=your_bucket_name
-   ```
-
-The app will automatically detect if S3 is configured and enable/disable image upload functionality accordingly.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -14,4 +14,14 @@ export function formatCurrency(amount: number): string {
     style: 'currency',
     currency: 'EUR'
   }).format(amount)
+}
+
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  }).format(date)
 } 

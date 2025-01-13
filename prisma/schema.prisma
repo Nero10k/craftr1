@@ -10,36 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  USER
-  SUPPORT
-  ADMIN
-}
-
-model User {
-  id                 String    @id @default(cuid())
-  name               String?
-  firstName          String?
-  lastName           String?
-  email              String    @unique
-  emailVerified      DateTime?
-  image              String?
-  password           String?
-  role               UserRole  @default(USER)
-  emailNotifications Boolean   @default(true)
-  marketingEmails    Boolean   @default(false)
-  securityAlerts     Boolean   @default(true)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  accounts           Account[]
-  sessions           Session[]
-  stripeCustomerId   String?   @unique
-  stripePriceId      String?
-  stripeSubscriptionStatus String?
-  stripeCurrentPeriodEnd DateTime?
-  verificationTokens VerificationToken[]
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -67,12 +37,84 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(user)
+  accounts      Account[]
+  sessions      Session[]
+  posts         ScheduledPost[]
+  agent         Agent?
+}
+
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
 
   @@unique([identifier, token])
+}
+
+enum UserRole {
+  admin
+  user
+}
+
+model Agent {
+  id                    String    @id @default(cuid())
+  userId               String    @unique
+  frequency            String
+  topics               String[]
+  tone                 String
+  ageGroup             String
+  language             String
+  guidelines           String    @db.Text
+  isActive             Boolean   @default(false)
+  lastRun              DateTime?
+  nextRun              DateTime?
+  linkedinClientId     String?
+  linkedinClientSecret String?
+  linkedinAccessToken  String?
+  linkedinOrganizationId String?
+  linkedinLastSync     DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ScheduledPost {
+  id                  String    @id @default(cuid())
+  userId              String
+  title               String
+  content             String    @db.Text
+  topic               String
+  scheduledFor        DateTime
+  publishedToLinkedIn Boolean   @default(false)
+  linkedinPostId      String?
+  linkedinPublishError String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  linkedinAnalytics   LinkedinAnalytics?
+
+  @@index([userId])
+}
+
+model LinkedinAnalytics {
+  id              String       @id @default(cuid())
+  postId          String       @unique
+  post            ScheduledPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  views           Int          @default(0)
+  likes           Int          @default(0)
+  comments        Int          @default(0)
+  shares          Int          @default(0)
+  clickThroughRate Float       @default(0)
+  engagementRate   Float       @default(0)
+  impressions      Int          @default(0)
+  lastUpdated      DateTime     @default(now())
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 } 

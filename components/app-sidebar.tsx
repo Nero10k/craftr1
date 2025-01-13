@@ -57,6 +57,11 @@ const data = {
       isActive: true,
     },
     {
+      title: "Generator",
+      url: "/generator",
+      icon: Bot,
+    },
+    {
       title: "Playground",
       url: "#",
       icon: SquareTerminal,
