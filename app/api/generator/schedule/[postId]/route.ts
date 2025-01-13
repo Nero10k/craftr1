@@ -1,16 +1,16 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 
 export async function PATCH(
-  req: Request,
+  request: NextRequest,
   { params }: { params: { postId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return new NextResponse("Unauthorized", { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Get user by email
@@ -21,10 +21,10 @@ export async function PATCH(
     })
 
     if (!user) {
-      return new NextResponse("User not found", { status: 404 })
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const { scheduledFor } = await req.json()
+    const { scheduledFor } = await request.json()
 
     // Verify the post belongs to the user
     const post = await prisma.scheduledPost.findUnique({
@@ -34,11 +34,11 @@ export async function PATCH(
     })
 
     if (!post) {
-      return new NextResponse("Post not found", { status: 404 })
+      return NextResponse.json({ error: "Post not found" }, { status: 404 })
     }
 
     if (post.userId !== user.id) {
-      return new NextResponse("Unauthorized", { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Update the scheduled time
@@ -54,18 +54,18 @@ export async function PATCH(
     return NextResponse.json(updatedPost)
   } catch (error) {
     console.error("[SCHEDULE_UPDATE_ERROR]", error)
-    return new NextResponse("Internal Error", { status: 500 })
+    return NextResponse.json({ error: "Internal Error" }, { status: 500 })
   }
 }
 
 export async function DELETE(
-  req: Request,
+  request: NextRequest,
   { params }: { params: { postId: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.email) {
-      return new Response("Unauthorized", { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Get user
@@ -74,7 +74,7 @@ export async function DELETE(
     })
 
     if (!user) {
-      return new Response("Unauthorized", { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Find post and verify ownership
@@ -85,11 +85,11 @@ export async function DELETE(
     })
 
     if (!post) {
-      return new Response("Post not found", { status: 404 })
+      return NextResponse.json({ error: "Post not found" }, { status: 404 })
     }
 
     if (post.userId !== user.id) {
-      return new Response("Unauthorized", { status: 401 })
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     // Delete the post
@@ -99,9 +99,9 @@ export async function DELETE(
       },
     })
 
-    return new Response(null, { status: 204 })
+    return NextResponse.json(null, { status: 204 })
   } catch (error) {
     console.error("[DELETE_POST_ERROR]", error)
-    return new Response("Internal Error", { status: 500 })
+    return NextResponse.json({ error: "Internal Error" }, { status: 500 })
   }
 } 
